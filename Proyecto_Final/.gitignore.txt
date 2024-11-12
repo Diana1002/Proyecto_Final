@@ -1,0 +1,49 @@
+# Ignorar carpetas de compilación y archivos temporales
+build/
+debug/
+release/
+
+# Archivos de Qt Creator
+*.user
+*.pro.user
+*.qbs.user
+*.cuser
+*.creator*
+
+# Archivos de configuración de CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+
+# Archivos binarios y de objetos
+*.obj
+*.o
+*.so
+*.a
+*.dll
+*.exe
+*.out
+
+# Archivos de registro y temporales del sistema
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Ignorar las carpetas ocultas de Git y Qt Creator
+.idea/
+.vscode/
+.git/
+
+# Archivos de salida de Qt
+Makefile*
+qrc_*.cpp
+moc_*.cpp
+ui_*.h
+
+# Ignorar cualquier otra carpeta de generación de código o archivos de prueba
+tests/
+dist/
+*.dSYM
