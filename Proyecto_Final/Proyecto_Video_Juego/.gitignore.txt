@@ -1,15 +1,5 @@
 # Ignorar carpetas de compilación y archivos temporales
-build/
-debug/
-release/
-
-# Archivos de Qt Creator
-*.user
-*.pro.user
-*.qbs.user
-*.cuser
-*.creator*
-
+/build
 # Archivos de configuración de CMake
 CMakeLists.txt.user
 CMakeCache.txt
