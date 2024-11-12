@@ -1,5 +1,5 @@
 # Ignorar carpetas de compilación y archivos temporales
-build/
+/build/
 debug/
 release/
 
