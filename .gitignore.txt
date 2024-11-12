@@ -1,5 +1,5 @@
 # Ignorar carpetas de compilación y archivos temporales
-Proyecto_Final/Proyecto_Video_Juego/build/
+/Proyecto_Final/Proyecto_Video_Juego/build/
 
 # Archivos de configuración de CMake
 CMakeLists.txt.user
