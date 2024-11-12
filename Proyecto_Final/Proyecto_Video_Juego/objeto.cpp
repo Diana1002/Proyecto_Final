@@ -1,7 +1,7 @@
 #include "objeto.h"
 
 
-Objeto::Objeto(QPoint _posicion, QString ruta, QPointF reescalado)
+Objeto::Objeto(QPointF _posicion, QString ruta, QPointF reescalado)
 {
     posicion=_posicion;
     // Cargar imagen
@@ -14,7 +14,7 @@ Objeto::Objeto(QPoint _posicion, QString ruta, QPointF reescalado)
     imagenItem = new QGraphicsPixmapItem(scaledImagen);
 }
 
-void Objeto::mover()
+void Objeto::mover(QPointF _posicion)
 {
 
 }

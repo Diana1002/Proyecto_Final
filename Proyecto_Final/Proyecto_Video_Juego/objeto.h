@@ -8,8 +8,9 @@ class Objeto
 public:
     Objeto(QPoint _posicion, QString ruta, QPointF reescalado=QPointF(1,1));
 
-    QPoint posicion;
+    QPointF posicion;
     QGraphicsItem *imagenItem=nullptr;
+    void mover(QPointF _posicion);
 };
 
 #endif // OBJETO_H

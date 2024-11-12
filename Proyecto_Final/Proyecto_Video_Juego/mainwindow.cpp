@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     scene->setSceneRect(0, 0, background.width(), background.height());
     */
     QString ruta = "C:\\Users\\Asus\\Documents\\DIANA BAEZA RUIZ\\SEMESTRE 2024-2\\Lab Info 2\\Proyecto_Prueba\\Imagenes\\carro.png";
-    QPoint pos(2,3);
+    QPointF pos(2.0,3.0);
     Objeto objeto(pos, ruta, QPointF(0.5 , 0.5) );
     scene->addItem(objeto.imagenItem);
     // Ajustar la vista
