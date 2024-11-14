@@ -94,3 +94,8 @@ void MainWindow::actualizarSimulacion()
 
     qDebug() << "Posición:" << pos << "Velocidad:" << vel << "Aceleración:" << acel;
 }
+
+void MainWindow::choque( QPo)
+{
+    
+}
