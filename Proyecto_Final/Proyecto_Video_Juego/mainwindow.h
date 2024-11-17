@@ -28,6 +28,7 @@ public:
     void actualizarSimulacion();
     void choque(Objeto &objeto1, Objeto &objeto2);
     void simulacionChoque();
+    void actualizarMovimiento();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
@@ -35,7 +36,7 @@ private:
     //Objeto *Jugador=nullptr;
     QTimer *timer;
     //QElapsedTimer lastUpdateTime;
-    float deltaDeTiempo = 0.1;
+    float deltaDeTiempo = 0.01;
 
     jugadorReal* jugadorReal1 = nullptr;   // Instancia del jugadorReal
     jugadorNPC* jugadorNPC1 = nullptr;     // Instancia del jugadorNPC

@@ -22,13 +22,18 @@ void Objeto::aplicarFuerza(QPointF _fuerza)
 {
     if (masa != 0) {
         aceleracion += QPointF(_fuerza.x() / masa, _fuerza.y() / masa);
-        velocidad += aceleracion*0.5;
+        velocidad += aceleracion;
     } else {
         aceleracion = QPointF(0, 0);
     }
 }
 
-void Objeto::actualizarMovimiento(float _deltaTiempo)
+void Objeto::setAceleracion(QPointF _nuevaAceleracion)
+{
+    aceleracion=_nuevaAceleracion;
+}
+
+/*void Objeto::actualizarMovimiento(float _deltaTiempo)
 {
 
     float k = 0.5;
@@ -43,7 +48,7 @@ void Objeto::actualizarMovimiento(float _deltaTiempo)
     posicion += velocidad*_deltaTiempo; //x = x0 + v * deltaTiempo
 
     setPos(posicion);
-}
+}*/
 
 void Objeto::setVelocidad(QPointF _nuevaVelocidad)
 {

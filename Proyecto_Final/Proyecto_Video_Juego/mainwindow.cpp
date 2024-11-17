@@ -59,7 +59,7 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     QPointF fuerza;
-    int Magnitud=100;
+    int Magnitud=1000;
     switch (event->key()) {
     case Qt::Key_W:
         qDebug() << "Tecla W presionada - Mover hacia arriba";
@@ -91,11 +91,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 void MainWindow::actualizarSimulacion()
 {
-    //float tiempo = lastUpdateTime.restart() / 1000.0f; // Calcula delta en segundos
-
-    // Llamar al método de actualizarMovimiento del objeto
-    jugadorReal1->actualizarMovimiento(deltaDeTiempo);
-    simulacionChoque();
+    actualizarMovimiento();
+    //jugadorReal1->actualizarMovimiento(deltaDeTiempo);
+    //simulacionChoque();
     //Crear funcion para detectar colisiones (todos los objetos con masa)
     //Si se detecta que dos objetos se estan colicionando,
     //hacer una funcion a la cual se le pase el objeto 1 y 2 ( los objetos que estan chocando
@@ -154,4 +152,57 @@ void MainWindow::simulacionChoque()
             choque(*objeto1, *objeto2);
         }
     }
+}
+
+void MainWindow::actualizarMovimiento()
+{
+
+    QList<QGraphicsItem*> ObjetosEnEscena = scene->items();
+    foreach(QGraphicsItem* ObjetoEnEscena, ObjetosEnEscena){
+        Objeto *ObjetoMovible = qgraphicsitem_cast<Objeto*>(ObjetoEnEscena);
+        if(!ObjetoMovible)
+            continue;
+
+        QPointF aceleracionInicial=ObjetoMovible->getAceleracion();
+        QPointF velocidadInicial = ObjetoMovible->getVelocidad();
+
+        float k = 0.5;
+        QPointF aceleracion=aceleracionInicial;
+        QPointF velocidad = velocidadInicial;
+        QPointF cambioPosicion = QPointF(0,0);
+        if (abs(aceleracion.x())<=0.001 && abs(aceleracion.y())<=0.001){
+            aceleracion = QPointF(0,0);
+            velocidad *= 0.95;
+            cambioPosicion +=velocidad*deltaDeTiempo;
+
+            ObjetoMovible->setAceleracion(aceleracion);
+            ObjetoMovible->setVelocidad(velocidad);
+            ObjetoMovible->mover(cambioPosicion);
+            continue;
+        }
+        float magnitud = sqrt(velocidad.x()*velocidad.x()+velocidad.y()*velocidad.y());
+        aceleracion += -aceleracion*exp(deltaDeTiempo*(-1/k))*magnitud*0.001;
+        velocidad += aceleracion*deltaDeTiempo; //v = v0 + a * deltaTiempo
+        cambioPosicion += velocidad*deltaDeTiempo; //x = x0 + v * deltaTiempo
+
+        ObjetoMovible->mover(cambioPosicion);
+        QList<QGraphicsItem*> Objetos = scene->collidingItems(ObjetoMovible);
+        if(Objetos.isEmpty()){
+
+            //Se setean todos los valores}
+            ObjetoMovible->setAceleracion(aceleracion);
+            ObjetoMovible->setVelocidad(velocidad);
+            continue;
+        }
+        ObjetoMovible->mover(-cambioPosicion);
+        foreach(QGraphicsItem *objeto , Objetos){
+            Objeto *objetodechoque = qgraphicsitem_cast<Objeto*>(objeto);
+            if(!objetodechoque)
+            {
+                qDebug() << "El objeto con que choca el objeto movible es un nullptr";
+            }
+            choque(*ObjetoMovible, *objetodechoque);
+        }
+    }
+
 }
