@@ -26,6 +26,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         objeto.h objeto.cpp
         jugadorreal.h jugadorreal.cpp
         jugadornpc.h jugadornpc.cpp
+        Recursos.qrc
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Proyecto_Video_Juego APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
