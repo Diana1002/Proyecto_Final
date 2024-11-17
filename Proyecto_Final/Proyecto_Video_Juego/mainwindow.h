@@ -7,6 +7,8 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QElapsedTimer>
+#include "jugadorreal.h"
+#include  "jugadornpc.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,14 +26,18 @@ public:
 
     void keyPressEvent(QKeyEvent *event) override;
     void actualizarSimulacion();
-
+    void choque(QGraphicsItem *objeto1, QGraphicsItem *objeto2);
+    void simulacionChoque();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     QGraphicsView *view;
-    Objeto *Jugador=nullptr;
+    //Objeto *Jugador=nullptr;
     QTimer *timer;
     //QElapsedTimer lastUpdateTime;
     float deltaDeTiempo = 0.1;
+
+    jugadorReal* jugadorReal1 = nullptr;   // Instancia del jugadorReal
+    jugadorNPC* jugadorNPC1 = nullptr;     // Instancia del jugadorNPC
 };
 #endif // MAINWINDOW_H

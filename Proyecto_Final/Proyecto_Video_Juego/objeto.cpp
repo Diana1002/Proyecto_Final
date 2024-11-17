@@ -44,9 +44,9 @@ void Objeto::mover(QPointF _cambioPosicion)
 
 void Objeto::aplicarFuerza(QPointF _fuerza)
 {
-
     if (masa != 0) {
-        aceleracion = QPointF(_fuerza.x() / masa, _fuerza.y() / masa);
+        aceleracion += QPointF(_fuerza.x() / masa, _fuerza.y() / masa);
+        velocidad += aceleracion*0.5;
     } else {
         aceleracion = QPointF(0, 0);
     }
@@ -54,10 +54,23 @@ void Objeto::aplicarFuerza(QPointF _fuerza)
 
 void Objeto::actualizarMovimiento(float _deltaTiempo)
 {
+    if (!imagenItem){
+        qDebug() << "Esta imagen es un puntero nulo";
+        return;
+    }
+    float k = 0.5;
+    if (abs(aceleracion.x())<=0.001 && abs(aceleracion.y())<=0.001){
+        aceleracion = QPointF(0,0);
+        velocidad *= 0.95;
+        return;
+    }
+    float magnitud = sqrt(velocidad.x()*velocidad.x()+velocidad.y()*velocidad.y());
+    aceleracion += -aceleracion*exp(_deltaTiempo*(-1/k))*magnitud*k;
     velocidad += aceleracion*_deltaTiempo; //v = v0 + a * deltaTiempo
     posicion += velocidad*_deltaTiempo; //x = x0 + v * deltaTiempo
-    if (imagenItem) {
-        imagenItem->setPos(posicion);
-    }
-    aceleracion *= 0.95;
+
+    imagenItem->setPos(posicion);
+
+
+
 }

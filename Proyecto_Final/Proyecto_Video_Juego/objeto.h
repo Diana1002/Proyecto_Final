@@ -2,6 +2,7 @@
 #define OBJETO_H
 #include <QGraphicsItem>
 #include <QDebug>
+#include <cmath>
 
 class Objeto
 {
