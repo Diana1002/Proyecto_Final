@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <cmath>
 
-class Objeto
+class Objeto : public QGraphicsItem
 {
 public:
     //Constructor
@@ -12,15 +12,13 @@ public:
     //Destructor
     ~Objeto();
     QPointF posicion;
-    QGraphicsItem *imagenItem=nullptr;
+    QPixmap imagen;
     void mover(QPointF _cambioPosicion);
     void aplicarFuerza(QPointF _fuerza);   // Aplicar fuerza al objeto
     void actualizarMovimiento(float _deltaTiempo);
     float masa;
     QPointF getPosicion() const;
-
     QPointF getVelocidad() const;
-
     QPointF getAceleracion() const;
 
 private:

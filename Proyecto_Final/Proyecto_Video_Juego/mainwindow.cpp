@@ -30,9 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
     // Ajustar la vista
 
     jugadorReal1 = new jugadorReal(QPointF(2.0, 3.0), ruta, QPointF(0.5, 0.5), 10.0);
-    scene->addItem(jugadorReal1->imagenItem);
+    scene->addItem(jugadorReal1);
     jugadorNPC1 = new jugadorNPC(QPointF(200, 0), ruta1, QPointF(0.5, 0.5), 15.0);
-    scene->addItem(jugadorNPC1->imagenItem);
+    scene->addItem(jugadorNPC1);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -130,7 +130,7 @@ void MainWindow::simulacionChoque()
         if (objetosChocando.isEmpty()){
             continue;
         }
-        foreach (QGraphicsItem* objChocando,objetosChocando){
+        foreach (QGraphicsItem* objChocando, objetosChocando){
 
         }
     }

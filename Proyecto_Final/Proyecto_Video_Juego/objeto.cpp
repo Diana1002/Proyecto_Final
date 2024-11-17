@@ -12,15 +12,38 @@ Objeto::Objeto(QPointF _posicion, QString ruta, QPointF reescalado, qfloat16 _ma
         return;
     }
     //Escalar imagen
-    QPixmap scaledImagen = imagenObjeto.scaled(imagenObjeto.width() * reescalado.x(), imagenObjeto.height() * reescalado.y(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    //Crear el grafico y posicionarlo
-    imagenItem = new QGraphicsPixmapItem(scaledImagen);
-    imagenItem->setPos(posicion);
+    imagen = imagenObjeto.scaled(imagenObjeto.width() * reescalado.x(), imagenObjeto.height() * reescalado.y(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    setPos(posicion);
 }
 Objeto::~Objeto() { //Destructor
-    delete imagenItem;
+
+}
+void Objeto::aplicarFuerza(QPointF _fuerza)
+{
+    if (masa != 0) {
+        aceleracion += QPointF(_fuerza.x() / masa, _fuerza.y() / masa);
+        velocidad += aceleracion*0.5;
+    } else {
+        aceleracion = QPointF(0, 0);
+    }
 }
 
+void Objeto::actualizarMovimiento(float _deltaTiempo)
+{
+
+    float k = 0.5;
+    if (abs(aceleracion.x())<=0.001 && abs(aceleracion.y())<=0.001){
+        aceleracion = QPointF(0,0);
+        velocidad *= 0.95;
+        return;
+    }
+    float magnitud = sqrt(velocidad.x()*velocidad.x()+velocidad.y()*velocidad.y());
+    aceleracion += -aceleracion*exp(_deltaTiempo*(-1/k))*magnitud*k;
+    velocidad += aceleracion*_deltaTiempo; //v = v0 + a * deltaTiempo
+    posicion += velocidad*_deltaTiempo; //x = x0 + v * deltaTiempo
+
+    setPos(posicion);
+}
 QPointF Objeto::getPosicion() const
 {
     return posicion;
@@ -39,38 +62,5 @@ QPointF Objeto::getAceleracion() const
 void Objeto::mover(QPointF _cambioPosicion)
 {
     posicion+=_cambioPosicion;
-    imagenItem->setPos(posicion);
-}
-
-void Objeto::aplicarFuerza(QPointF _fuerza)
-{
-    if (masa != 0) {
-        aceleracion += QPointF(_fuerza.x() / masa, _fuerza.y() / masa);
-        velocidad += aceleracion*0.5;
-    } else {
-        aceleracion = QPointF(0, 0);
-    }
-}
-
-void Objeto::actualizarMovimiento(float _deltaTiempo)
-{
-    if (!imagenItem){
-        qDebug() << "Esta imagen es un puntero nulo";
-        return;
-    }
-    float k = 0.5;
-    if (abs(aceleracion.x())<=0.001 && abs(aceleracion.y())<=0.001){
-        aceleracion = QPointF(0,0);
-        velocidad *= 0.95;
-        return;
-    }
-    float magnitud = sqrt(velocidad.x()*velocidad.x()+velocidad.y()*velocidad.y());
-    aceleracion += -aceleracion*exp(_deltaTiempo*(-1/k))*magnitud*k;
-    velocidad += aceleracion*_deltaTiempo; //v = v0 + a * deltaTiempo
-    posicion += velocidad*_deltaTiempo; //x = x0 + v * deltaTiempo
-
-    imagenItem->setPos(posicion);
-
-
-
+    setPos(posicion);
 }
