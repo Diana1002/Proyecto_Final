@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
     scene->addItem(backgroundItem);
     scene->setSceneRect(0, 0, background.width(), background.height());
     */
-    QString ruta = "C:\\Users\\Asus\\Documents\\DIANA BAEZA RUIZ\\SEMESTRE 2024-2\\Lab Info 2\\Proyecto_Prueba\\Imagenes\\carro.png";
-    QString ruta1 = "C:\\Users\\Asus\\Documents\\DIANA BAEZA RUIZ\\SEMESTRE 2024-2\\Lab Info 2\\Proyecto_Prueba\\Imagenes\\carro1.png";
+    QString ruta = ":/Imagenes/carro_Jugador";
+    QString ruta1 = ":/Imagenes/carro_NPC";
 
     //QPointF pos(2.0,3.0);
     //Objeto objeto(pos, ruta,QPointF(0.5 , 0.5)  );
@@ -127,5 +127,11 @@ void MainWindow::simulacionChoque()
     foreach (QGraphicsItem* item, objEnScene) {
         //qDebug() <<"La posicion de este objeto es"<<item->pos();
         QList <QGraphicsItem*> objetosChocando = scene->collidingItems(item);
+        if (objetosChocando.isEmpty()){
+            continue;
+        }
+        foreach (QGraphicsItem* objChocando,objetosChocando){
+
+        }
     }
 }
