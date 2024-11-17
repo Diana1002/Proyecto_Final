@@ -7,7 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow), scene(new QGraphicsScene(this)), view(new QGraphicsView(scene, this))
 {
     ui->setupUi(this);
-
+    this->move(0,0);
+    this->setFixedSize(1300,700);
     /*
     // Cargar imagen de la pista
     QPixmap background("C:\\Users\\Asus\\Documents\\DIANA BAEZA RUIZ\\SEMESTRE 2024-2\\Lab Info 2\\Proyecto_Prueba\\Imagenes\\pista1.png");
@@ -29,14 +30,17 @@ MainWindow::MainWindow(QWidget *parent)
     //scene->addItem(Jugador->imagenItem);
     // Ajustar la vista
 
-    jugadorReal1 = new jugadorReal(QPointF(2.0, 3.0), ruta, QPointF(0.5, 0.5), 10.0);
+    jugadorReal1 = new jugadorReal(QPointF(-200, 0), ruta, QPointF(0.2, 0.2), 10.0);
     scene->addItem(jugadorReal1);
-    jugadorNPC1 = new jugadorNPC(QPointF(200, 0), ruta1, QPointF(0.5, 0.5), 15.0);
+    QList<QPointF> RutaNPC = {QPointF(0,0),QPointF(100,0), QPointF(100,70), QPointF(0,70)};
+    jugadorNPC1 = new jugadorNPC(QPointF(0, 0), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
     scene->addItem(jugadorNPC1);
-
+    RutaNPC = { QPointF(100,70), QPointF(0,70),QPointF(0,0),QPointF(100,0)};
+    jugadorNPC *jugadorNPC2= new jugadorNPC(QPointF(100,70), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
+    scene->addItem(jugadorNPC2);
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setFixedSize(1000,700);
+    //view->setFixedSize(1300,700);
 
     setCentralWidget(view);
 
@@ -47,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
     //lastUpdateTime.start();
 
     jugadorReal1->setFlag(QGraphicsItem::ItemIsFocusable);
-    //jugadorReal1->imagenItem->setFocus();
 }
 
 MainWindow::~MainWindow()
@@ -92,6 +95,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::actualizarSimulacion()
 {
     actualizarMovimiento();
+    view->centerOn(jugadorReal1);
     //jugadorReal1->actualizarMovimiento(deltaDeTiempo);
     //simulacionChoque();
     //Crear funcion para detectar colisiones (todos los objetos con masa)
@@ -178,31 +182,54 @@ void MainWindow::actualizarMovimiento()
             ObjetoMovible->setAceleracion(aceleracion);
             ObjetoMovible->setVelocidad(velocidad);
             ObjetoMovible->mover(cambioPosicion);
-            continue;
         }
-        float magnitud = sqrt(velocidad.x()*velocidad.x()+velocidad.y()*velocidad.y());
-        aceleracion += -aceleracion*exp(deltaDeTiempo*(-1/k))*magnitud*0.001;
-        velocidad += aceleracion*deltaDeTiempo; //v = v0 + a * deltaTiempo
-        cambioPosicion += velocidad*deltaDeTiempo; //x = x0 + v * deltaTiempo
+        else{
+            float magnitud = sqrt(velocidad.x()*velocidad.x()+velocidad.y()*velocidad.y());
+            aceleracion += -aceleracion*exp(deltaDeTiempo*(-1/k))*magnitud*0.005;
+            velocidad += aceleracion*deltaDeTiempo; //v = v0 + a * deltaTiempo
+            cambioPosicion += velocidad*deltaDeTiempo; //x = x0 + v * deltaTiempo
+            ObjetoMovible->mover(cambioPosicion);
+        }
 
-        ObjetoMovible->mover(cambioPosicion);
+
         QList<QGraphicsItem*> Objetos = scene->collidingItems(ObjetoMovible);
         if(Objetos.isEmpty()){
 
             //Se setean todos los valores}
             ObjetoMovible->setAceleracion(aceleracion);
             ObjetoMovible->setVelocidad(velocidad);
-            continue;
         }
-        ObjetoMovible->mover(-cambioPosicion);
-        foreach(QGraphicsItem *objeto , Objetos){
-            Objeto *objetodechoque = qgraphicsitem_cast<Objeto*>(objeto);
-            if(!objetodechoque)
-            {
-                qDebug() << "El objeto con que choca el objeto movible es un nullptr";
+        else{
+            ObjetoMovible->mover(-cambioPosicion);
+            foreach(QGraphicsItem *objeto , Objetos){
+                Objeto *objetodechoque = qgraphicsitem_cast<Objeto*>(objeto);
+                if(!objetodechoque)
+                {
+                    qDebug() << "El objeto con que choca el objeto movible es un nullptr";
+                }
+                choque(*ObjetoMovible, *objetodechoque);
             }
-            choque(*ObjetoMovible, *objetodechoque);
         }
+
+        jugadorNPC *NPC = dynamic_cast<jugadorNPC*>(ObjetoEnEscena);
+        if(NPC)
+        {
+            QList<QPointF> Ruta=NPC->RutaNivel;
+            int PosicionRuta = NPC->PosicionRuta;
+            QPointF VectorDistancia = Ruta[PosicionRuta]-NPC->getPosicion();
+            float DistanciaAlPunto=sqrt(QPointF::dotProduct(VectorDistancia, VectorDistancia));
+            if(DistanciaAlPunto<=1)
+            {
+                NPC->siguientePunto();
+                PosicionRuta = NPC->PosicionRuta;
+                VectorDistancia = Ruta[PosicionRuta]-NPC->getPosicion();
+                DistanciaAlPunto=sqrt(QPointF::dotProduct(VectorDistancia, VectorDistancia));
+            }
+
+            QPointF VectorNormal = VectorDistancia/DistanciaAlPunto;
+            NPC->aplicarFuerza(VectorNormal*0.02);
+        }
+
     }
 
 }
