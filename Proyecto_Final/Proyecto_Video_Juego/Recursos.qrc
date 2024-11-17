@@ -1,1 +1,6 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/Imagenes">
+        <file alias="carro_Jugador">Recursos/carro.png</file>
+        <file alias="carro_NPC">Recursos/carro1.png</file>
+    </qresource>
+</RCC>
