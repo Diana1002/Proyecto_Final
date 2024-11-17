@@ -1,7 +1,7 @@
 #include "objeto.h"
 
 
-Objeto::Objeto(QPointF _posicion, QString ruta, QPointF reescalado, qfloat16 _masa)
+Objeto::Objeto(QPointF _posicion, QString ruta, QPointF reescalado, float _masa)
 {
     posicion=_posicion;
     masa = _masa;
@@ -38,12 +38,31 @@ void Objeto::actualizarMovimiento(float _deltaTiempo)
         return;
     }
     float magnitud = sqrt(velocidad.x()*velocidad.x()+velocidad.y()*velocidad.y());
-    aceleracion += -aceleracion*exp(_deltaTiempo*(-1/k))*magnitud*k;
+    aceleracion += -aceleracion*exp(_deltaTiempo*(-1/k))*magnitud*0.01;
     velocidad += aceleracion*_deltaTiempo; //v = v0 + a * deltaTiempo
     posicion += velocidad*_deltaTiempo; //x = x0 + v * deltaTiempo
 
     setPos(posicion);
 }
+
+void Objeto::setVelocidad(QPointF _nuevaVelocidad)
+{
+    velocidad = _nuevaVelocidad;
+}
+
+QRectF Objeto::boundingRect() const {
+    return QRectF(0, 0, imagen.width(), imagen.height());
+}
+
+void Objeto::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    if (!imagen.isNull()) {
+        painter->drawPixmap(0, 0, imagen); // Dibuja la imagen en la posición (0, 0) relativa al elemento
+    }
+}
+
 QPointF Objeto::getPosicion() const
 {
     return posicion;

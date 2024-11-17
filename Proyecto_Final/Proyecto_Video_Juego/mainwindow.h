@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include "objeto.h"
+//#include "objeto.h"
 #include <QMainWindow>
 #include <QKeyEvent>
 #include <QTimer>
@@ -26,7 +26,7 @@ public:
 
     void keyPressEvent(QKeyEvent *event) override;
     void actualizarSimulacion();
-    void choque(QGraphicsItem *objeto1, QGraphicsItem *objeto2);
+    void choque(Objeto &objeto1, Objeto &objeto2);
     void simulacionChoque();
 private:
     Ui::MainWindow *ui;

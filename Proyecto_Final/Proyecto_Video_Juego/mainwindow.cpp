@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start(1); // Actualizar cada 100 ms
     //lastUpdateTime.start();
 
-    jugadorReal1->imagenItem->setFlag(QGraphicsItem::ItemIsFocusable);
+    jugadorReal1->setFlag(QGraphicsItem::ItemIsFocusable);
     //jugadorReal1->imagenItem->setFocus();
 }
 
@@ -59,25 +59,26 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     QPointF fuerza;
+    int Magnitud=100;
     switch (event->key()) {
     case Qt::Key_W:
         qDebug() << "Tecla W presionada - Mover hacia arriba";
-        fuerza = QPointF(0,-10);
+        fuerza = QPointF(0,-Magnitud);
         //Jugador->mover(QPointF(0,-10));
         break;
     case Qt::Key_S:
         qDebug() << "Tecla S presionada - Mover hacia abajo";
-        fuerza = QPointF(0,10);
+        fuerza = QPointF(0,Magnitud);
         //Jugador->mover(QPointF(0, 10));  // Mover hacia abajo
         break;
     case Qt::Key_A:
         qDebug() << "Tecla A presionada - Mover hacia la izquierda";
-        fuerza = QPoint(-10, 0);
+        fuerza = QPoint(-Magnitud, 0);
         //Jugador->mover(QPointF(-10, 0)); // Mover hacia la izquierda
         break;
     case Qt::Key_D:
         qDebug() << "Tecla D presionada - Mover hacia la derecha";
-        fuerza = QPoint(10,0);
+        fuerza = QPoint(Magnitud,0);
         //Jugador->mover(QPointF(10, 0));  // Mover hacia la derecha
         break;
     default:
@@ -108,13 +109,24 @@ void MainWindow::actualizarSimulacion()
     //qDebug() << "Posición:" << pos << "Velocidad:" << vel << "Aceleración:" << acel;
 }
 
-void MainWindow::choque(QGraphicsItem* objeto1, QGraphicsItem* objeto2)
+
+void MainWindow::choque(Objeto &objeto1, Objeto &objeto2)
 {
-    if (objeto1->collidesWithItem(objeto2)) {
-        qDebug() << "Colisión detectada entre los dos objetos.";
-    } else {
-        qDebug() << "No hay colisión.";
-    }
+    //Se extraen los datos
+    float masa1=objeto1.masa;
+    float masa2=objeto2.masa;
+    QPointF Velocidad1=objeto1.getVelocidad();
+    QPointF Velocidad2=objeto2.getVelocidad();
+    QPointF Velocidad2Final = 2*masa1*Velocidad1;
+    //Se aplican las ecuaciones de choque elastico
+
+    Velocidad2Final-= masa1*Velocidad2;
+    Velocidad2Final+=masa2*Velocidad2;
+    Velocidad2Final/= (masa1+masa2);
+    QPointF Velocidad1Final = Velocidad2Final +Velocidad2 - Velocidad1;
+    objeto1.setVelocidad(Velocidad1Final);
+    objeto2.setVelocidad(Velocidad2Final);
+    return;
 }
 
 void MainWindow::simulacionChoque()
@@ -131,7 +143,15 @@ void MainWindow::simulacionChoque()
             continue;
         }
         foreach (QGraphicsItem* objChocando, objetosChocando){
-
+            if(item==objChocando){
+                continue;
+            }
+            Objeto *objeto1= qgraphicsitem_cast<Objeto*>(item);
+            Objeto *objeto2 = qgraphicsitem_cast<Objeto*>(objChocando);
+            if(!objeto1 or !objeto2){
+                return;
+            }
+            choque(*objeto1, *objeto2);
         }
     }
 }
