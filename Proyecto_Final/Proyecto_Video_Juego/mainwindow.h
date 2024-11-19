@@ -23,21 +23,18 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
     void keyPressEvent(QKeyEvent *event) override;
     void actualizarSimulacion();
     void choque(Objeto &objeto1, Objeto &objeto2);
     void simulacionChoque();
     void actualizarMovimiento();
+
 private:
+    float deltaDeTiempo = 0.01;
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     QGraphicsView *view;
-    //Objeto *Jugador=nullptr;
     QTimer *timer;
-    //QElapsedTimer lastUpdateTime;
-    float deltaDeTiempo = 0.01;
-
     jugadorReal* jugadorReal1 = nullptr;   // Instancia del jugadorReal
     jugadorNPC* jugadorNPC1 = nullptr;     // Instancia del jugadorNPC
 };

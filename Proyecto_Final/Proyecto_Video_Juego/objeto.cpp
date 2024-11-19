@@ -1,6 +1,5 @@
 #include "objeto.h"
 
-
 Objeto::Objeto(QPointF _posicion, QString ruta, QPointF reescalado, float _masa)
 {
     posicion=_posicion;
@@ -15,9 +14,7 @@ Objeto::Objeto(QPointF _posicion, QString ruta, QPointF reescalado, float _masa)
     imagen = imagenObjeto.scaled(imagenObjeto.width() * reescalado.x(), imagenObjeto.height() * reescalado.y(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     setPos(posicion);
 }
-Objeto::~Objeto() { //Destructor
-
-}
+Objeto::~Objeto() {}
 void Objeto::aplicarFuerza(QPointF _fuerza)
 {
     if (masa != 0) {
