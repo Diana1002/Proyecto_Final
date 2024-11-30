@@ -29,6 +29,7 @@ public:
     void simulacionChoque();
     void actualizarMovimiento();
 
+    void verificarLimites(QGraphicsItem *item, const QRectF &limites);
 private:
     float deltaDeTiempo = 0.01;
     Ui::MainWindow *ui;

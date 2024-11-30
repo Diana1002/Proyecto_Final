@@ -7,43 +7,38 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->move(0,0);
-    this->setFixedSize(1300,700);
-    /*
-    // Cargar imagen de la pista
-    QPixmap background("C:\\Users\\Asus\\Documents\\DIANA BAEZA RUIZ\\SEMESTRE 2024-2\\Lab Info 2\\Proyecto_Prueba\\Imagenes\\pista1.png");
-    if (background.isNull()){
-        qDebug() << "No se pudo cargar la imagen";
-        return;
-    }
-    // Agregar imagen de fondo de la pista a la escena
-    QGraphicsPixmapItem *backgroundItem = new QGraphicsPixmapItem(background);
-    scene->addItem(backgroundItem);
-    scene->setSceneRect(0, 0, background.width(), background.height());
-    */
-    QString ruta = ":/Imagenes/carro_Jugador";
-    QString ruta1 = ":/Imagenes/carro_NPC";
-    //QPointF pos(2.0,3.0);
-    //Objeto objeto(pos, ruta,QPointF(0.5 , 0.5)  );
-    //Jugador = new Objeto(pos, ruta, QPointF(0.5 , 0.5), 10.0F);
-    //scene->addItem(Jugador->imagenItem);
-    // Ajustar la vista
-    jugadorReal1 = new jugadorReal(QPointF(-200, 0), ruta, QPointF(0.2, 0.2), 10.0);
-    scene->addItem(jugadorReal1);
-    QList<QPointF> RutaNPC = {QPointF(0,0),QPointF(100,0), QPointF(100,70), QPointF(0,70)};
-    jugadorNPC1 = new jugadorNPC(QPointF(0, 0), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
-    scene->addItem(jugadorNPC1);
-    RutaNPC = { QPointF(100,70), QPointF(0,70),QPointF(0,0),QPointF(100,0)};
-    jugadorNPC *jugadorNPC2= new jugadorNPC(QPointF(100,70), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
-    scene->addItem(jugadorNPC2);
+    this->setFixedSize(900,700);
+    scene->setSceneRect(0, 0, 900, 700);
+
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //view->setFixedSize(1300,700);
+    view->setFixedSize(900,700);
     setCentralWidget(view);
+
+    QString ruta = ":/Imagenes/carro_Jugador";
+    QString ruta1 = ":/Imagenes/carro_NPC";
+
+    // Ajustar la vista
+    jugadorReal1 = new jugadorReal(QPointF(0, 0), ruta, QPointF(0.2, 0.2), 10.0);
+    scene->addItem(jugadorReal1);
+
+    QList<QPointF> RutaNPC = {QPointF(100,100),QPointF(300,100), QPointF(300,300), QPointF(100,300)};
+    jugadorNPC1 = new jugadorNPC(QPointF(0, 100), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
+    scene->addItem(jugadorNPC1);
+
+    RutaNPC = { QPointF(300,300), QPointF(100,300),QPointF(100,100),QPointF(300,100)};
+    jugadorNPC *jugadorNPC2= new jugadorNPC(QPointF(300,300), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
+    scene->addItem(jugadorNPC2);
+
+    // Crear paredes como barreras
+    QGraphicsRectItem *paredSuperior = scene->addRect(0, -5, 700, 5, QPen(Qt::NoPen), QBrush(Qt::black));
+    QGraphicsRectItem *paredInferior = scene->addRect(0, 700, 900, 5, QPen(Qt::NoPen), QBrush(Qt::black));
+    QGraphicsRectItem *paredIzquierda = scene->addRect(-5, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
+    QGraphicsRectItem *paredDerecha = scene->addRect(900, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
+
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarSimulacion);
     timer->start(1); // Actualizar cada 100 ms
-    //lastUpdateTime.start();
-    jugadorReal1->setFlag(QGraphicsItem::ItemIsFocusable);
 }
 
 MainWindow::~MainWindow()
@@ -83,6 +78,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     // Aplicar la fuerza al objeto
     jugadorReal1->aplicarFuerza(fuerza);
+
 }
 
 void MainWindow::actualizarSimulacion()
@@ -216,5 +212,33 @@ void MainWindow::actualizarMovimiento()
             QPointF VectorNormal = VectorDistancia/DistanciaAlPunto;
             NPC->aplicarFuerza(VectorNormal*0.02);
         }
+
     }
+}
+void MainWindow::verificarLimites(QGraphicsItem *item, const QRectF &limites) {
+    // Obtener la posición actual del objeto
+    QPointF posicionActual = item->pos();
+
+    // Obtener el tamaño del objeto (bounding box)
+    QRectF boundingBox = item->boundingRect();
+
+    // Calcular los límites permitidos teniendo en cuenta el tamaño del objeto
+    qreal leftLimit = limites.left();
+    qreal rightLimit = limites.right() - boundingBox.width();
+    qreal topLimit = limites.top();
+    qreal bottomLimit = limites.bottom() - boundingBox.height();
+
+    // Ajustar la posición para que no se salga de los límites
+    if (posicionActual.x() < leftLimit)
+        posicionActual.setX(leftLimit);
+    else if (posicionActual.x() > rightLimit)
+        posicionActual.setX(rightLimit);
+
+    if (posicionActual.y() < topLimit)
+        posicionActual.setY(topLimit);
+    else if (posicionActual.y() > bottomLimit)
+        posicionActual.setY(bottomLimit);
+
+    // Establecer la nueva posición ajustada
+    item->setPos(posicionActual);
 }
