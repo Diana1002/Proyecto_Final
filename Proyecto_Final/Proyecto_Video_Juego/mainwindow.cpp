@@ -33,27 +33,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // Crear paredes como barreras
-    QGraphicsRectItem *paredSuperior = scene->addRect(0, -5, 700, 5, QPen(Qt::NoPen), QBrush(Qt::black));
-    QGraphicsRectItem *paredInferior = scene->addRect(0, 700, 900, 5, QPen(Qt::NoPen), QBrush(Qt::black));
-    QGraphicsRectItem *paredIzquierda = scene->addRect(-5, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
-    QGraphicsRectItem *paredDerecha = scene->addRect(900, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
+    paredSuperior = scene->addRect(0, -5, 700, 5, QPen(Qt::NoPen), QBrush(Qt::black));
+    paredInferior = scene->addRect(0, 700, 900, 5, QPen(Qt::NoPen), QBrush(Qt::black));
+    paredIzquierda = scene->addRect(-5, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
+    paredDerecha = scene->addRect(900, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
 
-    // Crear el nivel 1
-    Nivel1* nivel1 = new Nivel1();
-    nivelActual= new Nivel(1,5);
-
-    // Configurar la vista para mostrar la escena del nivel
-    view = new QGraphicsView(nivel1->getScene());
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setFixedSize(900, 700);
-
-    setCentralWidget(view);
-
-    // Simular colisiones para mostrar la lógica de vidas
-    /*for (int i = 0; i < 6; ++i) { // Intentar más colisiones que vidas disponibles
-        nivel1->reducirVida();
-    }*/
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarSimulacion);
     timer->start(1); // Actualizar cada 100 ms

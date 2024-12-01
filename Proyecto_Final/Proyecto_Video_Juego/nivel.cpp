@@ -39,7 +39,7 @@ QGraphicsScene* Nivel::getScene() const{
 // Reducir vidas
 void Nivel::reducirVida() {
     if (vidas > 0) {
-        vidas--;
+       /// vidas--;
         qDebug() << "Vida perdida. Vidas restantes:" << vidas;
 
         if (vidas == 0) {

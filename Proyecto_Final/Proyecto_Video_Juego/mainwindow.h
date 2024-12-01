@@ -40,5 +40,9 @@ private:
     jugadorReal* jugadorReal1 = nullptr;   // Instancia del jugadorReal
     jugadorNPC* jugadorNPC1 = nullptr;     // Instancia del jugadorNPC
     Nivel* nivelActual;
+    QGraphicsRectItem *paredSuperior;
+    QGraphicsRectItem *paredInferior;
+    QGraphicsRectItem *paredIzquierda;
+    QGraphicsRectItem *paredDerecha;
 };
 #endif // MAINWINDOW_H
