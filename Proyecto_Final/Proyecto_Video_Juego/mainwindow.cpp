@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString ruta1 = ":/Imagenes/carro_NPC";
 
     // Ajustar la vista
-    jugadorReal1 = new jugadorReal(QPointF(0, 0), ruta, QPointF(0.2, 0.2), 10.0);
+    jugadorReal1 = new jugadorReal(QPointF(50, 50), ruta, QPointF(0.2, 0.2), 10.0);
     scene->addItem(jugadorReal1);
 
     QList<QPointF> RutaNPC = {QPointF(100,100),QPointF(300,100), QPointF(300,300), QPointF(100,300)};
