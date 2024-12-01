@@ -28,6 +28,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         jugadornpc.h jugadornpc.cpp
         Recursos.qrc
         nivel.h nivel.cpp
+        nivel1.h nivel1.cpp
 
     )
 # Define target properties for Android with Qt 6 as:

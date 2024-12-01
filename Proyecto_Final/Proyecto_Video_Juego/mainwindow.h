@@ -9,6 +9,7 @@
 #include <QElapsedTimer>
 #include "jugadorreal.h"
 #include  "jugadornpc.h"
+#include "nivel1.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -38,5 +39,6 @@ private:
     QTimer *timer;
     jugadorReal* jugadorReal1 = nullptr;   // Instancia del jugadorReal
     jugadorNPC* jugadorNPC1 = nullptr;     // Instancia del jugadorNPC
+    Nivel* nivelActual;
 };
 #endif // MAINWINDOW_H

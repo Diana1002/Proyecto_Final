@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,12 +31,29 @@ MainWindow::MainWindow(QWidget *parent)
     jugadorNPC *jugadorNPC2= new jugadorNPC(QPointF(300,300), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
     scene->addItem(jugadorNPC2);
 
+
     // Crear paredes como barreras
     QGraphicsRectItem *paredSuperior = scene->addRect(0, -5, 700, 5, QPen(Qt::NoPen), QBrush(Qt::black));
     QGraphicsRectItem *paredInferior = scene->addRect(0, 700, 900, 5, QPen(Qt::NoPen), QBrush(Qt::black));
     QGraphicsRectItem *paredIzquierda = scene->addRect(-5, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
     QGraphicsRectItem *paredDerecha = scene->addRect(900, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
 
+    // Crear el nivel 1
+    Nivel1* nivel1 = new Nivel1();
+    Nivel* nivelActual= new Nivel(1,5);
+
+    // Configurar la vista para mostrar la escena del nivel
+    QGraphicsView* view = new QGraphicsView(nivel1->getScene());
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setFixedSize(900, 700);
+
+    setCentralWidget(view);
+
+    // Simular colisiones para mostrar la lógica de vidas
+    for (int i = 0; i < 6; ++i) { // Intentar más colisiones que vidas disponibles
+        nivel1->reducirVida();
+    }
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarSimulacion);
     timer->start(1); // Actualizar cada 100 ms
@@ -85,21 +103,7 @@ void MainWindow::actualizarSimulacion()
 {
     actualizarMovimiento();
     view->centerOn(jugadorReal1);
-    //jugadorReal1->actualizarMovimiento(deltaDeTiempo);
-    //simulacionChoque();
-    //Crear funcion para detectar colisiones (todos los objetos con masa)
-    //Si se detecta que dos objetos se estan colicionando,
-    //hacer una funcion a la cual se le pase el objeto 1 y 2 ( los objetos que estan chocando
-    //y aplicarle la solucuion de las ecuaciones de choque (las que debo despejar)
-    //Las colisiones se detectan antes de moverlo NO DESPUES
-    // Verificar posición, velocidad, y aceleración
-    //QPointF pos = jugadorReal1->getPosicion();
-    //QPointF vel = jugadorReal1->getVelocidad();
-    //QPointF acel = jugadorReal1->getAceleracion();
-
-    //qDebug() << "Posición:" << pos << "Velocidad:" << vel << "Aceleración:" << acel;
 }
-
 
 void MainWindow::choque(Objeto &objeto1, Objeto &objeto2)
 {
@@ -141,6 +145,20 @@ void MainWindow::simulacionChoque()
             if(!objeto1 or !objeto2){
                 return;
             }
+            // Aquí llamamos al método para reducir vidas si uno de los objetos es el jugador
+            if (item == jugadorReal1 || objChocando == jugadorReal1) {
+                nivelActual->reducirVida(); // Reducir vida
+                qDebug() << "Colisión detectada. Vidas restantes:" << nivelActual->getVidas();
+
+                // Verificar si se acabaron las vidas
+                if (nivelActual->getVidas() <= 0) {
+                    qDebug() << "¡Juego terminado! Sin vidas restantes.";
+                    timer->stop(); // Detener el temporizador
+                    QMessageBox::information(this, "Juego terminado", "¡Sin vidas restantes! El juego ha terminado.");
+                    return;
+                }
+            }
+
             choque(*objeto1, *objeto2);
         }
     }
