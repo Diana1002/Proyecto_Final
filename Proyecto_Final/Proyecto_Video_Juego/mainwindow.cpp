@@ -40,10 +40,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Crear el nivel 1
     Nivel1* nivel1 = new Nivel1();
-    Nivel* nivelActual= new Nivel(1,5);
+    nivelActual= new Nivel(1,5);
 
     // Configurar la vista para mostrar la escena del nivel
-    QGraphicsView* view = new QGraphicsView(nivel1->getScene());
+    view = new QGraphicsView(nivel1->getScene());
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setFixedSize(900, 700);
@@ -51,9 +51,9 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(view);
 
     // Simular colisiones para mostrar la lógica de vidas
-    for (int i = 0; i < 6; ++i) { // Intentar más colisiones que vidas disponibles
+    /*for (int i = 0; i < 6; ++i) { // Intentar más colisiones que vidas disponibles
         nivel1->reducirVida();
-    }
+    }*/
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarSimulacion);
     timer->start(1); // Actualizar cada 100 ms
