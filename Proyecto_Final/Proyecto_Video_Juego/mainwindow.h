@@ -9,7 +9,7 @@
 #include <QElapsedTimer>
 #include "jugadorreal.h"
 #include  "jugadornpc.h"
-#include "nivel1.h"
+#include "nivel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,7 +29,6 @@ public:
     void choque(Objeto &objeto1, Objeto &objeto2);
     void simulacionChoque();
     void actualizarMovimiento();
-
     void verificarLimites(QGraphicsItem *item, const QRectF &limites);
 private:
     float deltaDeTiempo = 0.01;
@@ -39,10 +38,11 @@ private:
     QTimer *timer;
     jugadorReal* jugadorReal1 = nullptr;   // Instancia del jugadorReal
     jugadorNPC* jugadorNPC1 = nullptr;     // Instancia del jugadorNPC
-    Nivel* nivelActual;
     QGraphicsRectItem *paredSuperior;
     QGraphicsRectItem *paredInferior;
     QGraphicsRectItem *paredIzquierda;
     QGraphicsRectItem *paredDerecha;
+    Nivel *nivel1;
+
 };
 #endif // MAINWINDOW_H

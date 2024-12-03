@@ -1,20 +1,23 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <QMessageBox>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), scene(new QGraphicsScene(this)), view(new QGraphicsView(scene, this))
+    , ui(new Ui::MainWindow), scene(new QGraphicsScene(this)), view(new QGraphicsView(scene, this)), nivel1(new Nivel(QPointF(450, 350), 200, 100, 150, 70))
 {
     ui->setupUi(this);
-    this->move(0,0);
-    this->setFixedSize(900,700);
+    this->move(0, 0);
+    this->setFixedSize(900, 700);
     scene->setSceneRect(0, 0, 900, 700);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setFixedSize(900,700);
+    view->setFixedSize(900, 700);
     setCentralWidget(view);
+
+    // Añadir el objeto Nivel a la escena
+    scene->addItem(nivel1);
 
     QString ruta = ":/Imagenes/carro_Jugador";
     QString ruta1 = ":/Imagenes/carro_NPC";
@@ -31,12 +34,13 @@ MainWindow::MainWindow(QWidget *parent)
     jugadorNPC *jugadorNPC2= new jugadorNPC(QPointF(300,300), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
     scene->addItem(jugadorNPC2);
 
+    // paredes como barreras
+    //paredSuperior = scene->addRect(0, -5, 700, 5, QPen(Qt::NoPen), QBrush(Qt::black));
+    //paredInferior = scene->addRect(0, 700, 900, 5, QPen(Qt::NoPen), QBrush(Qt::black));
+    //paredIzquierda = scene->addRect(-5, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
+    //paredDerecha = scene->addRect(900, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
+    scene->setBackgroundBrush(QBrush(QColor(0, 0, 51)));
 
-    // Crear paredes como barreras
-    paredSuperior = scene->addRect(0, -5, 700, 5, QPen(Qt::NoPen), QBrush(Qt::black));
-    paredInferior = scene->addRect(0, 700, 900, 5, QPen(Qt::NoPen), QBrush(Qt::black));
-    paredIzquierda = scene->addRect(-5, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
-    paredDerecha = scene->addRect(900, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarSimulacion);
@@ -98,9 +102,9 @@ void MainWindow::choque(Objeto &objeto1, Objeto &objeto2)
     QPointF Velocidad2=objeto2.getVelocidad();
     QPointF Velocidad2Final = 2*masa1*Velocidad1;
     //Se aplican las ecuaciones de choque elastico
-    Velocidad2Final-= masa1*Velocidad2;
-    Velocidad2Final+=masa2*Velocidad2;
-    Velocidad2Final/= (masa1+masa2);
+    Velocidad2Final -= masa1*Velocidad2;
+    Velocidad2Final += masa2*Velocidad2;
+    Velocidad2Final /= (masa1+masa2);
     QPointF Velocidad1Final = Velocidad2Final +Velocidad2 - Velocidad1;
     objeto1.setVelocidad(Velocidad1Final);
     objeto2.setVelocidad(Velocidad2Final);
@@ -129,20 +133,6 @@ void MainWindow::simulacionChoque()
             if(!objeto1 or !objeto2){
                 return;
             }
-            // Aquí llamamos al método para reducir vidas si uno de los objetos es el jugador
-            if (item == jugadorReal1 || objChocando == jugadorReal1) {
-                nivelActual->reducirVida(); // Reducir vida
-                qDebug() << "Colisión detectada. Vidas restantes:" << nivelActual->getVidas();
-
-                // Verificar si se acabaron las vidas
-                if (nivelActual->getVidas() <= 0) {
-                    qDebug() << "¡Juego terminado! Sin vidas restantes.";
-                    timer->stop(); // Detener el temporizador
-                    QMessageBox::information(this, "Juego terminado", "¡Sin vidas restantes! El juego ha terminado.");
-                    return;
-                }
-            }
-
             choque(*objeto1, *objeto2);
         }
     }
@@ -216,31 +206,4 @@ void MainWindow::actualizarMovimiento()
         }
 
     }
-}
-void MainWindow::verificarLimites(QGraphicsItem *item, const QRectF &limites) {
-    // Obtener la posición actual del objeto
-    QPointF posicionActual = item->pos();
-
-    // Obtener el tamaño del objeto (bounding box)
-    QRectF boundingBox = item->boundingRect();
-
-    // Calcular los límites permitidos teniendo en cuenta el tamaño del objeto
-    qreal leftLimit = limites.left();
-    qreal rightLimit = limites.right() - boundingBox.width();
-    qreal topLimit = limites.top();
-    qreal bottomLimit = limites.bottom() - boundingBox.height();
-
-    // Ajustar la posición para que no se salga de los límites
-    if (posicionActual.x() < leftLimit)
-        posicionActual.setX(leftLimit);
-    else if (posicionActual.x() > rightLimit)
-        posicionActual.setX(rightLimit);
-
-    if (posicionActual.y() < topLimit)
-        posicionActual.setY(topLimit);
-    else if (posicionActual.y() > bottomLimit)
-        posicionActual.setY(bottomLimit);
-
-    // Establecer la nueva posición ajustada
-    item->setPos(posicionActual);
 }
