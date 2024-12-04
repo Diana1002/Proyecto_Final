@@ -24,10 +24,10 @@ void Nivel::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWi
     int innerHeight = 200; // Alto de la elipse interior
 
     // Definir el centro de la pista (centro de la ventana)
-    QPointF center(450, 350); // Centro de la ventana (900x700)
+    QPointF center(0, 0); // Centro de la ventana (900x700)
 
     // Dibujar el área entre las dos elipses como blanco
-    QBrush brush(Qt::white); // Relleno blanco
+    QBrush brush(Qt::black); // Relleno blanco
     painter->setBrush(brush);
     painter->setPen(Qt::NoPen); // Sin borde
     painter->drawEllipse(center, outerWidth, outerHeight); // Elipse exterior

@@ -27,17 +27,6 @@ void Objeto::aplicarFuerza(QPointF _fuerza)
         aceleracion = QPointF(0, 0);
     }
 }
-
-void Objeto::setAceleracion(QPointF _nuevaAceleracion)
-{
-    aceleracion=_nuevaAceleracion;
-}
-
-void Objeto::setVelocidad(QPointF _nuevaVelocidad)
-{
-    velocidad = _nuevaVelocidad;
-}
-
 QRectF Objeto::boundingRect() const {
     return QRectF(0, 0, imagen.width(), imagen.height());
 }
@@ -50,6 +39,17 @@ void Objeto::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         painter->drawPixmap(0, 0, imagen); // Dibuja la imagen en la posición (0, 0) relativa al elemento
     }
 }
+
+void Objeto::setAceleracion(QPointF _nuevaAceleracion)
+{
+    aceleracion=_nuevaAceleracion;
+}
+
+void Objeto::setVelocidad(QPointF _nuevaVelocidad)
+{
+    velocidad = _nuevaVelocidad;
+}
+
 
 QPointF Objeto::getPosicion() const
 {
@@ -68,6 +68,23 @@ QPointF Objeto::getAceleracion() const
 
 void Objeto::mover(QPointF _cambioPosicion)
 {
-    posicion+=_cambioPosicion;
+    // Calcular la nueva posición sumando el cambio a la posición actual
+    QPointF nuevaPos = posicion + _cambioPosicion;
+
+    // Definir los límites de la pista (área de 900x700)
+    QRectF limites(0, 0, 900, 700);
+
+    // Verificar que la nueva posición esté dentro de los límites
+    if (limites.contains(nuevaPos)) {
+        // Si la nueva posición está dentro de los límites, actualizamos la posición
+        posicion = nuevaPos;
+    } else {
+        // Si la nueva posición está fuera de los límites, ajustar la posición al borde más cercano
+        posicion.setX(qMax(limites.left(), qMin(nuevaPos.x(), limites.right())));
+        posicion.setY(qMax(limites.top(), qMin(nuevaPos.y(), limites.bottom())));
+    }
+
+    // Aplicar la nueva posición al objeto en la escena
     setPos(posicion);
 }
+

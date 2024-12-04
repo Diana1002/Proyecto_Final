@@ -23,14 +23,14 @@ MainWindow::MainWindow(QWidget *parent)
     QString ruta1 = ":/Imagenes/carro_NPC";
 
     // Ajustar la vista
-    jugadorReal1 = new jugadorReal(QPointF(50, 50), ruta, QPointF(0.2, 0.2), 10.0);
+    jugadorReal1 = new jugadorReal(QPointF(450, 350), ruta, QPointF(0.2, 0.2), 10.0);
     scene->addItem(jugadorReal1);
 
-    QList<QPointF> RutaNPC = {QPointF(100,100),QPointF(300,100), QPointF(300,300), QPointF(100,300)};
-    jugadorNPC1 = new jugadorNPC(QPointF(0, 100), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
+    QList<QPointF> RutaNPC = {QPointF(450,100),QPointF(450,300), QPointF(200,300), QPointF(200,300)};
+    jugadorNPC1 = new jugadorNPC(QPointF(200, 100), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
     scene->addItem(jugadorNPC1);
 
-    RutaNPC = { QPointF(300,300), QPointF(100,300),QPointF(100,100),QPointF(300,100)};
+    RutaNPC = { QPointF(450,300), QPointF(100,300),QPointF(100,100),QPointF(300,100)};
     jugadorNPC *jugadorNPC2= new jugadorNPC(QPointF(300,300), ruta1, QPointF(0.2, 0.2), 17.0, RutaNPC);
     scene->addItem(jugadorNPC2);
 
@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     //paredInferior = scene->addRect(0, 700, 900, 5, QPen(Qt::NoPen), QBrush(Qt::black));
     //paredIzquierda = scene->addRect(-5, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
     //paredDerecha = scene->addRect(900, 0, 5, 700, QPen(Qt::NoPen), QBrush(Qt::black));
-    scene->setBackgroundBrush(QBrush(QColor(0, 0, 51)));
+    //scene->setBackgroundBrush(QBrush(QColor(0, 0, 51)));
 
 
     timer = new QTimer(this);
